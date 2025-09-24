@@ -1,34 +1,21 @@
-Resume Parsing and Job Matching System
-A machine learning system that automatically analyzes resumes and matches candidates to job roles using NLP and intelligent scoring algorithms.
+How Rag worked here :
+Corpus creation: 238 resumes were parsed from PDF to text, lightly cleaned, and split into section-aware, token-based chunks of 220 tokens with a 40-token overlap to preserve context across boundaries.
 
-🚀 Features
-Resume Text Extraction: PDF, DOCX, and text support
+Embedding: Each chunk was converted into a dense vector using a transformer embedding model, enabling semantic matching beyond exact keywords.
 
-Skill Detection: Extracts technical skills across 7+ categories
+Vector index: All vectors were stored in a local similarity index (cosine via normalized embeddings) so nearest-neighbor search can rapidly retrieve the most relevant chunks for any query.
 
-Job Matching: Multi-dimensional scoring with 91% accuracy
+Retrieval: At query time, the query is embedded with the same model and used to fetch top-k similar chunks; optional filtering by category or document id focuses results as needed.
 
-Role Recommendations: Top job matches with confidence scores
+Scoring: A simple scorer aggregates similarity across retrieved evidence to produce a 0–100 relevance score, while listing top evidence chunks to ground decisions.
 
-🛠️ Tech Stack
-Python, Scikit-learn, spaCy, NLTK
+Process flow completed
+Kept only the two target categories (ENGINEERING and INFORMATION-TECHNOLOGY) and resolved each row to its PDF by ID, yielding 238 valid resumes.
 
-Pandas, NumPy, PyPDF2
+Extracted text from PDFs (primary parser with a fallback), cleaned it, and produced overlapping chunks suitable for embedding.
 
-📊 Performance
-91% Training Accuracy
+Generated embeddings for 2,324 chunks (dimension 768) and built a cosine-based similarity index with aligned metadata.
 
-65%+ Top-3 Matching Accuracy
+Implemented retrieval for ad-hoc queries or JD bullets, returning scored evidence with ids, sections, and paths.
 
-962 Resume Dataset
-
-🎯 Applications
-HR recruitment automation
-
-Job recommendation systems
-
-Career guidance tools
-
-Resume optimization
-
-ML-powered recruitment technology with NLP and intelligent matching algorithms.
+Added single-PDF ingestion: upload → extract → chunk (same settings) → embed → append vectors and metadata → optionally auto-assign a coarse category for quick tests.
